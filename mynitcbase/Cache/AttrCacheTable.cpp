@@ -27,18 +27,19 @@ void AttrCacheTable::recordToAttrCatEntry(union Attribute record[ATTRCAT_NO_ATTR
 /* returns the attribute with name `attrName` for the relation corresponding to relId
 NOTE: this function expects the caller to allocate memory for `*attrCatBuf`
 */
-// int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry* attrCatBuf) {
+int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry* attrCatBuf) {
 
-//   // check that relId is valid and corresponds to an open relation
-//   if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
-//   if(attrCache[relId]==NULL) return E_RELNOTOPEN;
-//   struct AttrCacheEntry* itr = attrCache[relId];
-//   while(itr != NULL){
-//     if(!strcmp(itr->attrCatEntry.attrName,attrName)){
-//         *attrCatBuf = itr->attrCatEntry;
-//     }
-//     itr=itr->next;
-//   }
+  // check that relId is valid and corresponds to an open relation
+  if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
+  if(attrCache[relId]==NULL) return E_RELNOTOPEN;
+  struct AttrCacheEntry* itr = attrCache[relId];
+  while(itr != NULL){
+    if(!strcmp(itr->attrCatEntry.attrName,attrName)){
+        *attrCatBuf = itr->attrCatEntry;
+        return SUCCESS;
+    }
+    itr=itr->next;
+  }
 
-//   return E_ATTRNOTEXIST;
-// }
+  return E_ATTRNOTEXIST;
+}

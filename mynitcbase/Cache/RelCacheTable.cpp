@@ -21,25 +21,25 @@ void RelCacheTable::recordToRelCatEntry(union Attribute record[RELCAT_NO_ATTRS],
     relCatEntry->numSlotsPerBlk = (int)record[RELCAT_NO_SLOTS_PER_BLOCK_INDEX].nVal;
 }
 
-// int RelCacheTable::getSearchIndex(int relId, RecId* searchIndex) {
-//   if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
-//   if(relCache[relId]==NULL) return E_RELNOTOPEN;
-//   *searchIndex = relCache[relId]->searchIndex;
-//   return SUCCESS;
-// }
+int RelCacheTable::getSearchIndex(int relId, RecId* searchIndex) {
+  if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
+  if(relCache[relId]==NULL) return E_RELNOTOPEN;
+  *searchIndex = relCache[relId]->searchIndex;
+  return SUCCESS;
+}
 
-// int RelCacheTable::setSearchIndex(int relId, RecId* searchIndex) {
-//   if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
-//   if(relCache[relId]==NULL) return E_RELNOTOPEN;
-//   relCache[relId]->searchIndex = *searchIndex;
-//   return SUCCESS;
-// }
+int RelCacheTable::setSearchIndex(int relId, RecId* searchIndex) {
+  if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
+  if(relCache[relId]==NULL) return E_RELNOTOPEN;
+  relCache[relId]->searchIndex = *searchIndex;
+  return SUCCESS;
+}
 
-// int RelCacheTable::resetSearchIndex(int relId){
-//   // use setSearchIndex to set the search index to {-1, -1}
-//   RecId* SearchIndex = (RecId*)malloc(sizeof(RecId));
-//   SearchIndex->block = -1;
-//   SearchIndex->slot = -1;
-//   setSearchIndex(relId,SearchIndex);
+int RelCacheTable::resetSearchIndex(int relId){
+  // use setSearchIndex to set the search index to {-1, -1}
+  RecId* SearchIndex = (RecId*)malloc(sizeof(RecId));
+  SearchIndex->block = -1;
+  SearchIndex->slot = -1;
+  setSearchIndex(relId,SearchIndex);
 
-// }
+}

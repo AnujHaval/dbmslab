@@ -1,7 +1,7 @@
 #include "OpenRelTable.h"
 #include <cstring>
 #include<stdlib.h>
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 OpenRelTable::OpenRelTable() {
 
@@ -123,4 +123,15 @@ OpenRelTable::~OpenRelTable() {
     free(RelCacheTable::relCache[i]);
     free(AttrCacheTable::attrCache[i]);
   }
+}
+
+int OpenRelTable::getRelId(char relName[ATTR_SIZE]) {
+
+  if(!strcmp(RELCAT_RELNAME,relName)) return RELCAT_RELID;
+  if(!strcmp(ATTRCAT_RELNAME, relName)) return ATTRCAT_RELID;
+  
+  // if relname is RELCAT_RELNAME, return RELCAT_RELID
+  // if relname is ATTRCAT_RELNAME, return ATTRCAT_RELID
+
+  return E_RELNOTOPEN;
 }
