@@ -1,30 +1,30 @@
 #include "BlockBuffer.h"
 #include <cstdlib>
 #include <cstring>
-
+#include<stdio.h>
 // the declarations for these functions can be found in "BlockBuffer.h"
 
 BlockBuffer::BlockBuffer(int blockNum) {
-    this->blockNum = blockNum;
+  this->blockNum = blockNum;
   // initialise this.blockNum with the argument
 }
 
-
-
 // calls the parent class constructor
 RecBuffer::RecBuffer(int blockNum) : BlockBuffer::BlockBuffer(blockNum){}
-
 int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char **buffPtr){
-
     int bufferNum = StaticBuffer::getBufferNum(this->blockNum);
     if(bufferNum==E_BLOCKNOTINBUFFER){
       bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
       if(bufferNum == E_OUTOFBOUND) return E_OUTOFBOUND;
       Disk::readBlock(StaticBuffer::blocks[bufferNum], this->blockNum);
     }  
-
+    else{
+      StaticBuffer::metainfo[bufferNum].timeStamp = -1;
+      for(int i=0;i<BUFFER_CAPACITY;i++){
+        if(StaticBuffer::metainfo[bufferNum].free == false && StaticBuffer::metainfo[bufferNum].dirty == true) StaticBuffer::metainfo[bufferNum].timeStamp++;
+      }
+    }
     *buffPtr = StaticBuffer::blocks[bufferNum];
-
     return SUCCESS;
 }
 
@@ -101,5 +101,34 @@ int RecBuffer::getSlotMap(unsigned char *slotMap) {
 
   // copy the values from `slotMapInBuffer` to `slotMap` (size is `slotCount`)
   memcpy(slotMap,slotMapInBuffer,slotCount);
+  return SUCCESS;
+}
+
+int RecBuffer::setRecord(union Attribute *rec, int slotNum) {
+    unsigned char *bufferPtr;
+    int retVal = loadBlockAndGetBufferPtr(&bufferPtr);
+    /* get the starting address of the buffer containing the block
+       using loadBlockAndGetBufferPtr(&bufferPtr). */
+    if(retVal!=SUCCESS) return retVal;
+    // if loadBlockAndGetBufferPtr(&bufferPtr) != SUCCESS
+        // return the value returned by the call.
+    HeadInfo head;
+    this->getHeader(&head);
+    /* get the header of the block using the getHeader() function */
+    int numattr = head.numAttrs;
+    // get number of attributes in the block.
+    int numslot = head.numSlots;
+    // get the number of slots in the block.
+    if(slotNum<0 || slotNum>=numslot) return E_OUTOFBOUND;
+    // if input slotNum is not in the permitted range return E_OUTOFBOUND.
+  int recordSize = numattr * ATTR_SIZE;
+  int offset = HEADER_SIZE + numslot + (recordSize*slotNum);
+  unsigned char *slotPointer = bufferPtr+offset;
+  memcpy(slotPointer, rec, recordSize);
+  retVal = StaticBuffer::setDirtyBit(this->blockNum);
+  if (retVal != SUCCESS) {
+		printf("There is some error in the code!\n");
+		exit(1);
+	}
   return SUCCESS;
 }

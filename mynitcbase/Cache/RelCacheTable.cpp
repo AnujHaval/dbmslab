@@ -41,5 +41,5 @@ int RelCacheTable::resetSearchIndex(int relId){
   SearchIndex->block = -1;
   SearchIndex->slot = -1;
   setSearchIndex(relId,SearchIndex);
-
+  return SUCCESS;
 }

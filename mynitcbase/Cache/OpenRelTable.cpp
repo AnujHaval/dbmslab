@@ -18,6 +18,7 @@ AttrCacheEntry *createAttrCacheEntryList(int size)
 
 	return head;
 }
+
 OpenRelTable::OpenRelTable() {
   // initialize relCache and attrCache with nullptr
   for (int i = 0; i < MAX_OPEN; ++i) {
@@ -189,17 +190,9 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
   int numattr = RelCacheTable::relCache[relId]->relCatEntry.numAttrs;
   
   listhead = createAttrCacheEntryList(numattr);
-  // int temp = numattr-1;
-  // while(temp){
-  //   AttrCacheEntry* current = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
-  //   current->next = listhead;
-  //   listhead=current;
-  //   temp--;
-  // }
   attrcache=listhead;
 
   RelCacheTable::resetSearchIndex(ATTRCAT_RELID);
-  cout << "JOJO" << endl;
   while(numattr--){
       /* let attrcatRecId store a valid record id an entry of the relation, relName,
       in the Attribute Catalog.*/
@@ -212,7 +205,6 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
       
       attrcache = attrcache->next;
   }
-  cout << "Hello" << endl;
   AttrCacheTable::attrCache[relId] = listhead;
 
   tableMetaInfo[relId].free = false;

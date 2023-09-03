@@ -81,7 +81,6 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
 
     if (searchRes.block != -1 && searchRes.slot != -1) {
         RecBuffer blockbuf(searchRes.block);
-        HeadInfo blockhead;     
         HeadInfo head;
         blockbuf.getHeader(&head);
         Attribute record[head.numAttrs];

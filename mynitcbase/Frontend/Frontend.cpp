@@ -1,10 +1,8 @@
 #include "Frontend.h"
-
 #include <cstring>
 #include <iostream>
 
-int Frontend::create_table(char relname[ATTR_SIZE], int no_attrs, char attributes[][ATTR_SIZE],
-                           int type_attrs[]) {
+int Frontend::create_table(char relname[ATTR_SIZE], int no_attrs, char attributes[][ATTR_SIZE],int type_attrs[]) {
   // Schema::createRel
   return SUCCESS;
 }
@@ -23,13 +21,11 @@ int Frontend::close_table(char relname[ATTR_SIZE]) {
 }
 
 int Frontend::alter_table_rename(char relname_from[ATTR_SIZE], char relname_to[ATTR_SIZE]) {
-  // return Schema::renameRel(relname_from, relname_to);
-  return SUCCESS;  
+  return Schema::renameRel(relname_from, relname_to);
 }
 
 int Frontend::alter_table_rename_column(char relname[ATTR_SIZE], char attrname_from[ATTR_SIZE],char attrname_to[ATTR_SIZE]){
-  // return Schema::renameAttr(relname, attrname_from, attrname_to);  
-  return SUCCESS;
+  return Schema::renameAttr(relname, attrname_from, attrname_to);  
 }
 
 int Frontend::create_index(char relname[ATTR_SIZE], char attrname[ATTR_SIZE]) {

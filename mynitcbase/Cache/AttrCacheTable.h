@@ -21,7 +21,7 @@ typedef struct AttrCacheEntry {
   RecId recId;
   IndexId searchIndex;
   struct AttrCacheEntry *next;
-
+  
 } AttrCacheEntry;
 
 class AttrCacheTable {
