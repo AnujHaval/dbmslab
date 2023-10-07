@@ -43,7 +43,8 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
   if (type == NUMBER) {
     if (isNumber(strVal)) {       // the isNumber() function is implemented below
       attrVal.nVal = atof(strVal);
-    } else {
+    } 
+    else {
       return E_ATTRTYPEMISMATCH;
     }
   } else if (type == STRING) {
@@ -104,6 +105,33 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
 
   return SUCCESS;
 }
+int Algebra::insert(char relName[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE]){
+    // if relName is equal to "RELATIONCAT" or "ATTRIBUTECAT"
+    // return E_NOTPERMITTED;
+    if(!strcmp(relName,RELCAT_RELNAME) || !strcmp(relName,ATTRCAT_RELNAME)) return E_NOTPERMITTED;
 
+    int relId = OpenRelTable::getRelId(relName);
+    if(relId<0 || relId>=MAX_OPEN) return E_RELNOTOPEN;
 
-// will return if a string can be parsed as a floating point number
+    RelCatEntry relCatBuf;
+    RelCacheTable::getRelCatEntry(relId,&relCatBuf);
+    
+    if(relCatBuf.numAttrs != nAttrs) return E_NATTRMISMATCH;
+
+    Attribute recVals[nAttrs];
+
+    for(int i=0;i<nAttrs;i++){
+      AttrCatEntry attrCatEntry;
+      AttrCacheTable::getAttrCatEntry(relId,i,&attrCatEntry);
+      int type = attrCatEntry.attrType;
+      if(type == NUMBER){
+        if(isNumber(record[i])) recVals[i].nVal = atof (record[i]);
+        else return E_ATTRTYPEMISMATCH;
+      }
+      else if(type==STRING){
+        strcpy(recVals[i].sVal, record[i]);
+      }
+    }
+    int retVal = BlockAccess::insert(relId,recVals);
+    return retVal;
+}

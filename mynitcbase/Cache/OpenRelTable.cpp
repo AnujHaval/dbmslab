@@ -171,19 +171,9 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
     relcache->recId.block = relcatRecId.block;
     relcache->recId.slot = relcatRecId.slot;
     RelCacheTable::relCache[relId] = relcache;
-
-      /* read the record entry corresponding to relcatRecId and create a relCacheEntry
-      on it using RecBuffer::getRecord() and RelCacheTable::recordToRelCatEntry().
-      update the recId field of this Relation Cache entry to relcatRecId.
-      use the Relation Cache entry to set the relId-th entry of the RelCacheTable.
-    NOTE: make sure to allocate memory for the RelCacheEntry using malloc()
-  */
-
-  /****** Setting up Attribute Cache entry for the relation ******/
-
-  // let listHead be used to hold the head of the linked list of attrCache entries.
-  AttrCacheEntry* listHead = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
-  Attribute attrrecord[ATTRCAT_NO_ATTRS];
+   
+    AttrCacheEntry* listHead = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
+    Attribute attrrecord[ATTRCAT_NO_ATTRS];
 
   AttrCacheEntry* attrcache = NULL;
   AttrCacheEntry* listhead=NULL;
@@ -225,8 +215,18 @@ int OpenRelTable::closeRel(int relId) {
     return E_RELNOTOPEN;
   }
 
-  free(RelCacheTable::relCache[relId]);
+  if (RelCacheTable::relCache[relId]->dirty)
+  {
+    Attribute record[RELCAT_NO_ATTRS];
+    RelCacheTable::relCatEntryToRecord(&RelCacheTable::relCache[relId]->relCatEntry, record);
 
+    RecId recId = RelCacheTable::relCache[relId]->recId;
+    RecBuffer relCatBlock(recId.block);
+
+    relCatBlock.setRecord(record,recId.slot);
+  }
+
+  free(RelCacheTable::relCache[relId]);
   AttrCacheEntry* head = AttrCacheTable::attrCache[relId];
   AttrCacheEntry* next = head->next;
 
