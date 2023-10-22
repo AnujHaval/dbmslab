@@ -18,14 +18,6 @@ bool isNumber(char *str) {
   int ret = sscanf(str, "%f %n", &ignore, &len);
   return ret == 1 && len == strlen(str);
 }
-/* used to select all the records that satisfy a condition.
-the arguments of the function are
-- srcRel - the source relation we want to select from
-- targetRel - the relation we want to select into. (ignore for now)
-- attr - the attribute that the condition is checking
-- op - the operator of the condition
-- strVal - the value that we want to compare against (represented as a string)
-*/
 int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr[ATTR_SIZE], int op, char strVal[ATTR_SIZE]) {
   int srcRelId = OpenRelTable::getRelId(srcRel);   
   //cout<<srcRelId;   // we'll implement this later
@@ -108,6 +100,7 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
 int Algebra::insert(char relName[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE]){
     // if relName is equal to "RELATIONCAT" or "ATTRIBUTECAT"
     // return E_NOTPERMITTED;
+    printf("Algebra\n");
     if(!strcmp(relName,RELCAT_RELNAME) || !strcmp(relName,ATTRCAT_RELNAME)) return E_NOTPERMITTED;
 
     int relId = OpenRelTable::getRelId(relName);
