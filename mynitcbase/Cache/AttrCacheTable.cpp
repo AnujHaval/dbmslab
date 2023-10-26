@@ -23,10 +23,6 @@ void AttrCacheTable::recordToAttrCatEntry(union Attribute record[ATTRCAT_NO_ATTR
   attrCatEntry->primaryFlag = (bool)record[ATTRCAT_PRIMARY_FLAG_INDEX].nVal;
   attrCatEntry->rootBlock = (int)record[ATTRCAT_ROOT_BLOCK_INDEX].nVal;
 }
-
-/* returns the attribute with name `attrName` for the relation corresponding to relId
-NOTE: this function expects the caller to allocate memory for `*attrCatBuf`
-*/
 int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry* attrCatBuf) {
 
   // check that relId is valid and corresponds to an open relation
@@ -43,7 +39,6 @@ int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCat
 
   return E_ATTRNOTEXIST;
 }
-
 void AttrCacheTable::attrCatEntryToRecord(AttrCatEntry* attrCatEntry,union Attribute record[ATTRCAT_NO_ATTRS]) {
   strcpy(record[ATTRCAT_REL_NAME_INDEX].sVal, attrCatEntry->relName);
   strcpy(record[ATTRCAT_ATTR_NAME_INDEX].sVal, attrCatEntry->attrName);
@@ -51,4 +46,27 @@ void AttrCacheTable::attrCatEntryToRecord(AttrCatEntry* attrCatEntry,union Attri
   record[ATTRCAT_PRIMARY_FLAG_INDEX].nVal = attrCatEntry->primaryFlag;
   record[ATTRCAT_ROOT_BLOCK_INDEX].nVal = attrCatEntry->rootBlock;
   record[ATTRCAT_OFFSET_INDEX].nVal = attrCatEntry->offset;
+}
+int AttrCacheTable::resetSearchIndex(int relId, int offset) {
+	if (relId < 0 || relId >= MAX_OPEN) return E_OUTOFBOUND;
+	if (AttrCacheTable::attrCache[relId] == nullptr) return E_RELNOTOPEN;
+  AttrCacheEntry* search= attrCache[relId];
+  while(offset>0){
+  	search= search->next;
+  	offset--;
+  }
+	AttrCacheTable::attrCache[relId]->searchIndex.block = -1;
+  AttrCacheTable::attrCache[relId]->searchIndex.index = -1;
+	return SUCCESS;
+  
+}
+int AttrCacheTable::resetSearchIndex(int relId, char *attrname) {
+  if (relId < 0 || relId >= MAX_OPEN) return E_OUTOFBOUND;
+	if (AttrCacheTable::attrCache[relId] == nullptr) return E_RELNOTOPEN;
+  AttrCacheEntry* search= attrCache[relId];
+  while(strcmp(attrname, search->attrCatEntry.attrName)) search= search->next;
+	AttrCacheTable::attrCache[relId]->searchIndex.block = -1;
+  AttrCacheTable::attrCache[relId]->searchIndex.index = -1;
+	return SUCCESS;
+  
 }

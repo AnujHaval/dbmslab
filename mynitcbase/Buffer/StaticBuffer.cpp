@@ -75,6 +75,7 @@ int StaticBuffer::getBufferNum(int blockNum){
     }
     return E_BLOCKNOTINBUFFER;
 }
+
 int StaticBuffer::setDirtyBit(int blockNum){
     int bufferNum = getBufferNum(blockNum);
     // find the buffer index corresponding to the block using getBufferNum().
