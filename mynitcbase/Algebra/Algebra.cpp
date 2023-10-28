@@ -73,6 +73,7 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], int tar_
     // RecBuffer TestBuffer(srcRelCat.firstBlk);
     // HeadInfo testhead;
     // TestBuffer.getHeader(&testhead);
+
     // while(testhead.rblock != -1){
     //   cout << testhead.rblock << endl;
     //   RecBuffer TestBuffer(testhead.rblock);
@@ -151,9 +152,8 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE]) {
         // record will contain the next record
           retVal = BlockAccess::insert(targetRelId,record);
         // ret = BlockAccess::insert(targetRelId, proj_record);
-
         if (retVal!=SUCCESS) {
-            Schema::closeRel(targetRel);
+            Schema::closeRel(targetRel);            
             Schema::deleteRel(targetRel);
             return retVal;
         }
@@ -189,6 +189,7 @@ int Algebra::insert(char relName[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE
         strcpy(recVals[i].sVal, record[i]);
       }
     }
+    cout << recVals->nVal << endl;
     int retVal = BlockAccess::insert(relId,recVals);
     return retVal;
 }
