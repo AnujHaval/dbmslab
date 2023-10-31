@@ -314,7 +314,7 @@ RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], union Attri
 		// will store the difference between the attributes 
 		// set cmpVal using compareAttrs()
 		int cmpVal = compareAttrs(record[attrOffset], attrVal, attrCatBuffer.attrType);
-		 
+
 
 		if (
 			(op == NE && cmpVal != 0) || // if op is "not equal to"
@@ -355,9 +355,9 @@ int BlockAccess::search(int relId, Attribute *record, char attrName[ATTR_SIZE], 
 	
     // get rootBlock from the attribute catalog entry
     // if no rootblock ie not in bplustree
-	if(rootblock == -1) recId = BlockAccess::linearSearch(relId,attrName,attrVal,op);
+	if(rootblock == -1) {printf("LinearSearch\n");recId = BlockAccess::linearSearch(relId,attrName,attrVal,op);}
     //if in bplustree
-    else recId = BPlusTree::bPlusSearch(relId,attrName,attrVal,op);
+    else {printf("BplusSearch\n");recId = BPlusTree::bPlusSearch(relId,attrName,attrVal,op);}
     
 
 	if(recId.block == -1 && recId.slot == -1) return E_NOTFOUND;
