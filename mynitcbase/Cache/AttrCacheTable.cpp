@@ -108,6 +108,49 @@ int AttrCacheTable::setSearchIndex(int relId, int attrOffset, IndexId *searchInd
   return E_ATTRNOTEXIST;
 }
 
+int AttrCacheTable::setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry *attrCatBuf) {
+
+  if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
+  if(attrCache[relId] == NULL) return E_RELNOTOPEN;
+  
+
+  for(AttrCacheEntry* entry = attrCache[relId]; entry!=NULL; entry=entry->next/* each attribute corresponding to relation with relId */)
+  {
+    if(!strcmp(entry->attrCatEntry.attrName,attrName)){
+      strcpy(entry->attrCatEntry.attrName,attrCatBuf->attrName);
+      strcpy(entry->attrCatEntry.relName,attrCatBuf->relName);
+      entry->attrCatEntry.attrType = attrCatBuf->attrType;
+      entry->attrCatEntry.offset = attrCatBuf->offset;
+      entry->attrCatEntry.primaryFlag = attrCatBuf->primaryFlag;
+      entry->attrCatEntry.rootBlock = attrCatBuf->rootBlock;
+      entry->dirty = true;
+      return SUCCESS;
+    }
+  }
+  return E_ATTRNOTEXIST;
+}
+int AttrCacheTable::setAttrCatEntry(int relId, int offset, AttrCatEntry *attrCatBuf) {
+
+  if(relId<0 || relId>=MAX_OPEN) return E_OUTOFBOUND;
+  if(attrCache[relId] == NULL) return E_RELNOTOPEN;
+  
+
+  for(AttrCacheEntry* entry = attrCache[relId]; entry!=NULL; entry=entry->next/* each attribute corresponding to relation with relId */)
+  {
+    if (entry->attrCatEntry.offset == offset){
+      strcpy(entry->attrCatEntry.attrName,attrCatBuf->attrName);
+      strcpy(entry->attrCatEntry.relName,attrCatBuf->relName);
+      entry->attrCatEntry.attrType = attrCatBuf->attrType;
+      entry->attrCatEntry.offset = attrCatBuf->offset;
+      entry->attrCatEntry.primaryFlag = attrCatBuf->primaryFlag;
+      entry->attrCatEntry.rootBlock = attrCatBuf->rootBlock;
+      entry->dirty = true;
+      return SUCCESS;
+    }
+  }
+  return E_ATTRNOTEXIST;
+}
+
 
 // int AttrCacheTable::resetSearchIndex(int relId, char *attrname) {
 //   if (relId < 0 || relId >= MAX_OPEN) return E_OUTOFBOUND;

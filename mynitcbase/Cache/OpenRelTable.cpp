@@ -186,17 +186,12 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
   return relId;
 }
 int OpenRelTable::closeRel(int relId) {
-  if (relId==RELCAT_RELID || relId==ATTRCAT_RELID) {
-    return E_NOTPERMITTED;
-  }
+  if (relId==RELCAT_RELID || relId==ATTRCAT_RELID) return E_NOTPERMITTED;
 
-  if (relId < 0 || relId >= MAX_OPEN) {
-    return E_OUTOFBOUND;
-  }
+  if (relId < 0 || relId >= MAX_OPEN) return E_OUTOFBOUND;
 
-  if (tableMetaInfo[relId].free == true) {
-    return E_RELNOTOPEN;
-  }
+  if (tableMetaInfo[relId].free == true) return E_RELNOTOPEN;
+  
 
   if (RelCacheTable::relCache[relId]->dirty)
   {
@@ -214,6 +209,13 @@ int OpenRelTable::closeRel(int relId) {
   AttrCacheEntry* next = head->next;
 
   while(next){
+    if (head->dirty){
+			Attribute attrCatRecord [ATTRCAT_NO_ATTRS];
+			AttrCacheTable::attrCatEntryToRecord(&(head->attrCatEntry), attrCatRecord);
+			RecBuffer attrCatBlockBuffer (head->recId.block);
+			attrCatBlockBuffer.setRecord(attrCatRecord, head->recId.slot);
+		}
+
     free(head);
     head = next;
     next = next->next;
@@ -229,6 +231,7 @@ int OpenRelTable::closeRel(int relId) {
 
   return SUCCESS;
 }
+
 OpenRelTable::~OpenRelTable() {
     for (int i = 2; i < MAX_OPEN; ++i) {
       if (!tableMetaInfo[i].free) {

@@ -165,6 +165,7 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE]) {
 int Algebra::insert(char relName[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE]){
     // if relName is equal to "RELATIONCAT" or "ATTRIBUTECAT"
     // return E_NOTPERMITTED;
+    
     if(!strcmp(relName,RELCAT_RELNAME) || !strcmp(relName,ATTRCAT_RELNAME)) return E_NOTPERMITTED;
 
     int relId = OpenRelTable::getRelId(relName);
@@ -189,7 +190,6 @@ int Algebra::insert(char relName[ATTR_SIZE], int nAttrs, char record[][ATTR_SIZE
         strcpy(recVals[i].sVal, record[i]);
       }
     }
-    cout << recVals->nVal << endl;
     int retVal = BlockAccess::insert(relId,recVals);
     return retVal;
 }
