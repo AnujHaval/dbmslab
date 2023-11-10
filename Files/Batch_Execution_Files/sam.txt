@@ -1,8 +1,4 @@
-CREATE TABLE Toys(id NUM, name STR, colour STR, stock NUM);
-open table Toys;
-INSERT INTO Toys VALUES FROM toys.csv
-SELECT name,colour FROM Toys INTO ToyColours;
-SELECT * FROM Toys INTO ToysForSale WHERE stock > 3000;
-SELECT * FROM Toys INTO ToysToReorder WHERE stock <= 1000;
-SELECT * FROM Toys INTO ToysCopy;
-SELECT id,name FROM Toys INTO BlueToys WHERE colour = blue;
+CREATE TABLE S11_Students(name STR, cgpa NUM);
+OPEN TABLE S11_Students;
+INSERT INTO S11_Students VAlUES FROM s11students.csv;
+CREATE INDEX ON S11_Students.name;

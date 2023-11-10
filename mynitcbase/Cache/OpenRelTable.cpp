@@ -206,19 +206,20 @@ int OpenRelTable::closeRel(int relId) {
 
   free(RelCacheTable::relCache[relId]);
   AttrCacheEntry* head = AttrCacheTable::attrCache[relId];
-  AttrCacheEntry* next = head->next;
+  // AttrCacheEntry* next = head->next;
 
-  while(next){
+  while(head != nullptr){
     if (head->dirty){
 			Attribute attrCatRecord [ATTRCAT_NO_ATTRS];
 			AttrCacheTable::attrCatEntryToRecord(&(head->attrCatEntry), attrCatRecord);
+      cout << attrCatRecord[ATTRCAT_ROOT_BLOCK_INDEX].nVal << endl; 
 			RecBuffer attrCatBlockBuffer (head->recId.block);
 			attrCatBlockBuffer.setRecord(attrCatRecord, head->recId.slot);
 		}
-
+    AttrCacheEntry* next = head->next; 
     free(head);
+    head = nullptr;
     head = next;
-    next = next->next;
   }
   // free the memory allocated in the relation and attribute caches which was
   // allocated in the OpenRelTable::openRel() function

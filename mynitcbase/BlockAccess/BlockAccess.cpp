@@ -377,9 +377,9 @@ int BlockAccess::search(int relId, Attribute *record, char attrName[ATTR_SIZE], 
 
     // get rootBlock from the attribute catalog entry
     // if no rootblock ie not in bplustree
-	if(rootblock == -1) {printf("linear\n");recId = BlockAccess::linearSearch(relId,attrName,attrVal,op);}
+	if(rootblock == -1) {cout << "linearsearch" << endl; recId = BlockAccess::linearSearch(relId,attrName,attrVal,op);}
     //if in bplustree
-    else {printf("Bplus\n");recId = BPlusTree::bPlusSearch(relId,attrName,attrVal,op);}
+    else {cout << "BplusSearch" << endl; recId = BPlusTree::bPlusSearch(relId,attrName,attrVal,op);}
     
 
 	if(recId.block == -1 && recId.slot == -1) return E_NOTFOUND;
